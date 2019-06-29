@@ -24,5 +24,6 @@
  - The C++ version is suitable for the client and server side. 
  - [Website](http://www.behaviac.com/) for documents, tutorials, API，FAQ，source code, downloads，etc.
   - BehaviacSetup*.exe is the setup package with the binary editor and demo executable. You can download/clone the source code from [github behaviac](https://github.com/Tencent/behaviac)
- 
- 
+
+##
+2019.6.29 forked from [Tencent/behaviac 3.6.39 commit:55d1710](https://github.com/Tencent/behaviac) 
