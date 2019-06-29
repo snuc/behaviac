@@ -276,6 +276,7 @@ if(MSVC OR BEHAVIAC_ANDROID_ON)
 	
 	#warning treated as error
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /WX")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4244")
 	#multiple processor compilation
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP /EHs")
 	set (COMPILE_POSTFIX "msvc")
