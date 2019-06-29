@@ -1,3 +1,11 @@
-build/cmake_binary
-bin
-lib
+/build/cmake_binary
+/bin
+/lib
+/tools/designer/.vs
+/tools/designer/BehaviacDesigner/obj
+/tools/designer/BehaviacDesignerBase/obj
+/tools/designer/Plugins/PluginBehaviac/obj
+/tools/designer/External/DockPanel/WinFormsUI/bin
+/tools/designer/External/DockPanel/WinFormsUI/obj
+/tools/designer/out
+!/tools/designer/out/config.xml
