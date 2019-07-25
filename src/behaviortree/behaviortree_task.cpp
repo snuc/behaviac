@@ -1253,7 +1253,7 @@ namespace behaviac {
     void SingeChildTask::load(IIONode* node) {
         super::load(node);
 
-        if (this->m_status != BT_INVALID) {
+        if (this->m_root && this->m_status != BT_INVALID) {
             CIOID  rootId("root");
             IIONode* rootNode = node->findNodeChild(rootId);
             BEHAVIAC_ASSERT(rootNode);
@@ -1269,11 +1269,16 @@ namespace behaviac {
             return t;
         }
 
-        if (this->m_root->GetId() == id) {
-            return this->m_root;
-        }
+		if (this->m_root)
+		{
+			if (this->m_root->GetId() == id) {
+				return this->m_root;
+			}
 
-        return this->m_root->GetTaskById(id);
+			return this->m_root->GetTaskById(id);
+		}
+
+        return 0;
     }
 
     EBTStatus SingeChildTask::update(Agent* pAgent, EBTStatus childStatus) {
