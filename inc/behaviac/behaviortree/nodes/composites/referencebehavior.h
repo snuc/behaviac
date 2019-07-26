@@ -86,6 +86,7 @@ namespace behaviac {
     private:
         int						m_nextStateId;
         BehaviorTreeTask*		m_subTree;
+		behaviac::string		m_szTreePath;
 #if BEHAVIAC_USE_HTN
         AgentState*             m_currentState;
 #endif//

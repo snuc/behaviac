@@ -214,20 +214,59 @@ namespace behaviac {
     void ReferencedBehaviorTask::copyto(BehaviorTask* target) const {
         super::copyto(target);
 
-        // BEHAVIAC_ASSERT(ReferencedBehaviorTask::DynamicCast(target));
-        // ReferencedBehaviorTask* ttask = (ReferencedBehaviorTask*)target;
+        BEHAVIAC_ASSERT(ReferencedBehaviorTask::DynamicCast(target));
+        ReferencedBehaviorTask* ttask = (ReferencedBehaviorTask*)target;
+
+		if (this->m_subTree) {
+			if (!ttask->m_subTree) {
+				const BehaviorNode* pNode = this->m_subTree->GetNode();
+				BEHAVIAC_ASSERT(BehaviorTree::DynamicCast(pNode));
+				ttask->m_subTree = (BehaviorTreeTask*)pNode->CreateAndInitTask();
+			}
+
+			BEHAVIAC_ASSERT(ttask->m_subTree);
+			this->m_subTree->copyto(ttask->m_subTree);
+		}
+		ttask->m_szTreePath = this->m_szTreePath;
     }
 
     void ReferencedBehaviorTask::save(IIONode* node) const {
         super::save(node);
+
+		if (this->m_status != BT_INVALID) {
+			if (this->m_subTree) {
+				CIOID attrId("treePath");
+				node->setAttr(attrId, this->m_szTreePath);
+
+				CIOID  nodeId("subTree");
+				IIONode* chidlNode = node->newNodeChild(nodeId);
+				this->m_subTree->save(chidlNode);
+			}
+		}
     }
 
     void ReferencedBehaviorTask::load(IIONode* node) {
         super::load(node);
+
+		if (this->m_subTree == 0)
+		{
+			CIOID  attrId("treePath");
+			node->getAttr(attrId, this->m_szTreePath);
+			this->m_subTree = Workspace::GetInstance()->CreateBehaviorTreeTask(this->m_szTreePath.c_str());
+			//TODO pNode->SetTaskParams(pAgent, this->m_subTree);
+		}
+
+		if (this->m_subTree && this->m_status != BT_INVALID) {
+			CIOID  rootId("subTree");
+			IIONode* rootNode = node->findNodeChild(rootId);
+			BEHAVIAC_ASSERT(rootNode);
+			this->m_subTree->load(rootNode);
+		}
     }
 
     void ReferencedBehaviorTask::Init(const BehaviorNode* node) {
         super::Init(node);
+		BEHAVIAC_ASSERT(m_root == 0);
     }
 
     bool ReferencedBehaviorTask::onevent(Agent* pAgent, const char* eventName, behaviac::map<uint32_t, IInstantiatedVariable*>* eventParams) {
@@ -252,7 +291,7 @@ namespace behaviac {
         this->m_nextStateId = -1;
 
         const char* szTreePath = pNode->GetReferencedTree(pAgent);
-
+		m_szTreePath = szTreePath;
 		//to create the task on demand
 		if (szTreePath && (this->m_subTree == NULL || !StringUtils::Compare(szTreePath, this->m_subTree->GetName().c_str())))
 		{
