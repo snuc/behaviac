@@ -29,7 +29,10 @@
 #endif//BEHAVIAC_CCDEFINE_MSVC
 
 namespace behaviac {
-    BehaviorTask::BehaviorTask() : m_status(BT_INVALID), m_node(0), m_parent(0), m_attachments(0), m_id((uint16_t) - 1), m_bHasManagingParent(false) {
+
+	static void LoadLocals(IIONode* node, behaviac::map<uint32_t, IInstantiatedVariable*>& locals);
+    
+	BehaviorTask::BehaviorTask() : m_status(BT_INVALID), m_node(0), m_parent(0), m_attachments(0), m_id((uint16_t) - 1), m_bHasManagingParent(false) {
     }
 
     BehaviorTask::~BehaviorTask() {
@@ -1395,8 +1398,24 @@ namespace behaviac {
     void BehaviorTreeTask::copyto(BehaviorTask* target) const {
         super::copyto(target);
 
-        // BEHAVIAC_ASSERT(BehaviorTreeTask::DynamicCast(target));
-        // BehaviorTreeTask* ttask = (BehaviorTreeTask*)target;
+        BEHAVIAC_ASSERT(BehaviorTreeTask::DynamicCast(target));
+        BehaviorTreeTask* ttask = (BehaviorTreeTask*)target;
+
+		for (behaviac::map<uint32_t, IInstantiatedVariable*>::const_iterator it = ttask->m_localVars.begin(); it != ttask->m_localVars.end(); ++it) {
+			IInstantiatedVariable* pLocal = it->second;
+
+			BEHAVIAC_DELETE(pLocal);
+		}
+
+		ttask->m_localVars.clear();
+
+		for (behaviac::map<uint32_t, IInstantiatedVariable*>::const_iterator it = this->m_localVars.begin(); it != this->m_localVars.end(); ++it) {
+			IInstantiatedVariable* pLocal = it->second;
+
+			IInstantiatedVariable* pNew = pLocal->clone();
+
+			ttask->m_localVars[it->first] = pNew;
+		}
     }
 
     void BehaviorTreeTask::save(IIONode* node) const {
@@ -1416,6 +1435,8 @@ namespace behaviac {
 
     void BehaviorTreeTask::load(IIONode* node) {
         super::load(node);
+
+		LoadLocals(node, this->m_localVars);
     }
 
     BehaviorTreeTask::~BehaviorTreeTask() {
@@ -1660,7 +1681,7 @@ namespace behaviac {
     void BehaviorTreeTask::Load(IIONode* node) {
         this->load(node);
 
-        LoadLocals(node, this->m_localVars);
+        //LoadLocals(node, this->m_localVars);
     }
 
 

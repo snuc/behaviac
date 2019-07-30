@@ -248,19 +248,22 @@ namespace behaviac {
     void ReferencedBehaviorTask::load(IIONode* node) {
         super::load(node);
 
-		if (this->m_subTree == 0)
+		if (this->m_status != BT_INVALID)
 		{
-			CIOID  attrId("treePath");
-			node->getAttr(attrId, this->m_szTreePath);
-			this->m_subTree = Workspace::GetInstance()->CreateBehaviorTreeTask(this->m_szTreePath.c_str());
-			//TODO pNode->SetTaskParams(pAgent, this->m_subTree);
-		}
+			if (this->m_subTree == 0)
+			{
+				CIOID  attrId("treePath");
+				node->getAttr(attrId, this->m_szTreePath);
+				this->m_subTree = Workspace::GetInstance()->CreateBehaviorTreeTask(this->m_szTreePath.c_str());
+				//TODO pNode->SetTaskParams(pAgent, this->m_subTree);
+			}
 
-		if (this->m_subTree && this->m_status != BT_INVALID) {
-			CIOID  rootId("subTree");
-			IIONode* rootNode = node->findNodeChild(rootId);
-			BEHAVIAC_ASSERT(rootNode);
-			this->m_subTree->load(rootNode);
+			if (this->m_subTree) {
+				CIOID  rootId("subTree");
+				IIONode* rootNode = node->findNodeChild(rootId);
+				BEHAVIAC_ASSERT(rootNode);
+				this->m_subTree->load(rootNode);
+			}
 		}
     }
 
