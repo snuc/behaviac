@@ -309,6 +309,7 @@ namespace behaviac {
 		else if (this->m_subTree)
 		{
 			this->m_subTree->reset(pAgent);
+			pNode->SetTaskParams(pAgent, this->m_subTree);
 		}
 
         return true;
