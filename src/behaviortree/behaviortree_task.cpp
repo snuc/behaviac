@@ -752,7 +752,7 @@ namespace behaviac {
 
     //
     //Set the m_currentTask as task
-    //if the leaf node is runninng ,then we should set the leaf's parent node also as running
+    //if the leaf node is running ,then we should set the leaf's parent node also as running
     //
     void BranchTask::SetCurrentTask(BehaviorTask* task) {
         if (task != 0) {

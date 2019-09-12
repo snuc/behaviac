@@ -566,7 +566,7 @@ namespace behaviac {
                     //if trigger mode is 'return', just push the current bt 'oldBt' on the stack and do nothing more
                     //'oldBt' will be restored when the new triggered one ends
                     if (triggerMode == TM_Return) {
-                        BehaviorTreeStackItem_t item(this->m_currentBT, triggerMode, bByEvent);
+                        BehaviorTreeStackItem_t item(this->m_currentBT, bByEvent);
                         BEHAVIAC_ASSERT(this->m_btStack.size() < 200, "recursive?");
                         this->m_btStack.push_back(item);
                     } else if (triggerMode == TM_Transfer) {
@@ -658,19 +658,17 @@ namespace behaviac {
 
                     bool bExecCurrent = false;
 
-                    if (lastOne.triggerMode == TM_Return) {
-                        if (!lastOne.triggerByEvent) {
-                            if (this->m_currentBT != pCurrent) {
-                                s = this->m_currentBT->resume(this, s);
-                            } else {
-                                BEHAVIAC_ASSERT(true);
-                            }
-                        } else {
-                            bExecCurrent = true;
-                        }
-                    } else {
-                        bExecCurrent = true;
-                    }
+					if (!lastOne.triggerByEvent) {
+						if (this->m_currentBT != pCurrent) {
+							s = this->m_currentBT->resume(this, s);
+						}
+						else {
+							BEHAVIAC_ASSERT(true);
+						}
+					}
+					else {
+							bExecCurrent = true;
+					}
 
                     if (bExecCurrent) {
                         pCurrent = this->m_currentBT;

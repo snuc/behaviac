@@ -559,10 +559,9 @@ namespace behaviac {
 
         struct BehaviorTreeStackItem_t {
             BehaviorTreeTask*	bt;
-            TriggerMode			triggerMode;
             bool				triggerByEvent;
 
-            BehaviorTreeStackItem_t(BehaviorTreeTask* bt_, TriggerMode tm, bool bByEvent) : bt(bt_), triggerMode(tm), triggerByEvent(bByEvent) {
+            BehaviorTreeStackItem_t(BehaviorTreeTask* bt_, bool bByEvent) : bt(bt_), triggerByEvent(bByEvent) {
             }
         };
 
