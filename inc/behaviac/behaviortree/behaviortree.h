@@ -147,6 +147,10 @@ namespace behaviac {
     };
 
 #define BEHAVIAC_LOCAL_TASK_PARAM_PRE "_$local_task_param_$_"
+#define BEHAVIAC_LOCAL_TASK_PARAM_0	  "_$local_task_param_$_0"
+#define BEHAVIAC_LOCAL_TASK_PARAM_1   "_$local_task_param_$_1"
+#define BEHAVIAC_LOCAL_TASK_PARAM_2   "_$local_task_param_$_2"
+
     /**
     * Base class for BehaviorTree Nodes. This is the static part
     */

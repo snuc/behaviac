@@ -238,11 +238,9 @@ namespace behaviac
     {
         //Agent::FireEvent(this, eventName, param1);
         behaviac::map<uint32_t, IInstantiatedVariable*> eventParams;
-        char paramName[1024];
 
-        string_sprintf(paramName, "%s%d", BEHAVIAC_LOCAL_TASK_PARAM_PRE, 0);
-        uint32_t paramId = MakeVariableId(paramName);
-        eventParams[paramId] = BEHAVIAC_NEW CVariable<ParamType1>(paramName, param1);
+        uint32_t paramId = MakeVariableId(BEHAVIAC_LOCAL_TASK_PARAM_0);
+        eventParams[paramId] = BEHAVIAC_NEW CVariable<ParamType1>(BEHAVIAC_LOCAL_TASK_PARAM_0, param1);
 
         this->btonevent(eventName, &eventParams);
     }
@@ -252,15 +250,12 @@ namespace behaviac
     {
         //Agent::FireEvent(this, eventName, param1, param2);
         behaviac::map<uint32_t, IInstantiatedVariable*> eventParams;
-        char paramName[1024];
 
-        string_sprintf(paramName, "%s%d", BEHAVIAC_LOCAL_TASK_PARAM_PRE, 0);
-        uint32_t paramId = MakeVariableId(paramName);
-        eventParams[paramId] = BEHAVIAC_NEW CVariable<ParamType1>(paramName, param1);
+        uint32_t paramId = MakeVariableId(BEHAVIAC_LOCAL_TASK_PARAM_0);
+        eventParams[paramId] = BEHAVIAC_NEW CVariable<ParamType1>(BEHAVIAC_LOCAL_TASK_PARAM_0, param1);
 
-        string_sprintf(paramName, "%s%d", BEHAVIAC_LOCAL_TASK_PARAM_PRE, 1);
-        paramId = MakeVariableId(paramName);
-        eventParams[paramId] = BEHAVIAC_NEW CVariable<ParamType2>(paramName, param2);
+        paramId = MakeVariableId(BEHAVIAC_LOCAL_TASK_PARAM_1);
+        eventParams[paramId] = BEHAVIAC_NEW CVariable<ParamType2>(BEHAVIAC_LOCAL_TASK_PARAM_1, param2);
 
         this->btonevent(eventName, &eventParams);
     }
@@ -269,19 +264,15 @@ namespace behaviac
     BEHAVIAC_FORCEINLINE void Agent::FireEvent(const char* eventName, const ParamType1& param1, const ParamType2& param2, const ParamType3& param3)
     {
         behaviac::map<uint32_t, IInstantiatedVariable*> eventParams;
-        char paramName[1024];
+        
+        uint32_t paramId = MakeVariableId(BEHAVIAC_LOCAL_TASK_PARAM_0);
+        eventParams[paramId] = BEHAVIAC_NEW CVariable<ParamType1>(BEHAVIAC_LOCAL_TASK_PARAM_0, param1);
 
-        string_sprintf(paramName, "%s%d", BEHAVIAC_LOCAL_TASK_PARAM_PRE, 0);
-        uint32_t paramId = MakeVariableId(paramName);
-        eventParams[paramId] = BEHAVIAC_NEW CVariable<ParamType1>(paramName, param1);
+        paramId = MakeVariableId(BEHAVIAC_LOCAL_TASK_PARAM_1);
+        eventParams[paramId] = BEHAVIAC_NEW CVariable<ParamType2>(BEHAVIAC_LOCAL_TASK_PARAM_1, param2);
 
-        string_sprintf(paramName, "%s%d", BEHAVIAC_LOCAL_TASK_PARAM_PRE, 1);
-        paramId = MakeVariableId(paramName);
-        eventParams[paramId] = BEHAVIAC_NEW CVariable<ParamType2>(paramName, param2);
-
-        string_sprintf(paramName, "%s%d", BEHAVIAC_LOCAL_TASK_PARAM_PRE, 2);
-        paramId = MakeVariableId(paramName);
-        eventParams[paramId] = BEHAVIAC_NEW CVariable<ParamType3>(paramName, param3);
+        paramId = MakeVariableId(BEHAVIAC_LOCAL_TASK_PARAM_2);
+        eventParams[paramId] = BEHAVIAC_NEW CVariable<ParamType3>(BEHAVIAC_LOCAL_TASK_PARAM_2, param3);
 
         this->btonevent(eventName, &eventParams);
     }
