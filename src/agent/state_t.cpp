@@ -16,6 +16,8 @@
 #include "behaviac/common/file/filesystem.h"
 
 namespace behaviac {
+	BehaviorTreeTask* ParseBTTask(IIONode* btNode);
+	
     State_t::State_t() : m_bt(0) {
     }
 
@@ -67,6 +69,21 @@ namespace behaviac {
             this->m_bt->Save(&node);
         }
 
+		CIOID  stacksId("stacks");
+		IIONode* stacksNode = node.newNodeChild(stacksId);
+    	
+		for (vector<BehaviorTreeStackItem_t>::const_iterator it = this->m_btStack.begin(); it != this->m_btStack.end(); ++it) {
+			BehaviorTreeStackItem_t item = *it;
+
+			CIOID  itemId("item");
+			IIONode* itemNode = stacksNode->newNodeChild(itemId);
+
+			CIOID  eventId("event");
+			itemNode->setAttr(eventId, item.triggerByEvent);
+
+			item.bt->Save(itemNode);
+		}
+    	
         return xmlInfo;
     }
 
@@ -82,23 +99,34 @@ namespace behaviac {
         CIOID  btNodeId("BehaviorTree");
         IIONode* btNode = node.findNodeChild(btNodeId);
 
-        if (btNode) {
-            CIOID  sourceId("source");
-            behaviac::string btName;
+    	if (btNode)
+    	{
+			BEHAVIAC_DELETE(this->m_bt);
+			this->m_bt = ParseBTTask(btNode);
+    	}
 
-            if (btNode->getAttr(sourceId, btName)) {
-                BEHAVIAC_DELETE this->m_bt;
-                this->m_bt = Workspace::GetInstance()->CreateBehaviorTreeTask(btName.c_str());
-            }
+		CIOID  stacksNodeId("stacks");
+		IIONode* stacksNode = node.findNodeChild(stacksNodeId);
 
-            CIOID  nodeId("node");
-            IIONode* n = btNode->findNodeChild(nodeId);
-            BEHAVIAC_ASSERT(n);
+		if (stacksNode)
+		{
+			this->m_btStack.clear();
+			int32_t count = stacksNode->getChildCount();
+			CIOID  eventId("event");
 
-			if (this->m_bt && n) {
-				this->m_bt->Load(n);
+			for (int i = 0;i < count;i++)
+			{
+				behaviac::string attrStr;
+				IIONode* item = stacksNode->getChild(i);
+				item->getAttr(eventId, attrStr);
+				IIONode* stackBtNode = item->findNodeChild(btNodeId);
+				BehaviorTreeTask* stackBt = ParseBTTask(stackBtNode);
+				bool triggerByEvent = false;
+				StringUtils::ParseString(attrStr.c_str(), triggerByEvent);
+				BehaviorTreeStackItem_t newItem(stackBt, triggerByEvent);
+				this->m_btStack.push_back(newItem);
 			}
-        }
+		}
     }
 
     bool State_t::SaveToFile(const char* fileName, Agent* pAgent) const {
@@ -145,4 +173,24 @@ namespace behaviac {
 
         return false;
     }
+
+	BehaviorTreeTask* ParseBTTask(IIONode* btNode)
+	{
+		BehaviorTreeTask* bt = nullptr;
+		CIOID  sourceId("source");
+		behaviac::string btName;
+
+		if (btNode->getAttr(sourceId, btName)) {
+			bt = Workspace::GetInstance()->CreateBehaviorTreeTask(btName.c_str());
+		}
+
+		CIOID  nodeId("node");
+		IIONode* n = btNode->findNodeChild(nodeId);
+		BEHAVIAC_ASSERT(n);
+
+		if (bt && n) {
+			bt->Load(n);
+		}
+		return bt;
+	}
 }

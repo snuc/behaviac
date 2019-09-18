@@ -19,6 +19,7 @@
 
 namespace behaviac {
     class BehaviorTreeTask;
+	struct BehaviorTreeStackItem_t;
 
     /*! \addtogroup Agent
     * @{
@@ -34,9 +35,11 @@ namespace behaviac {
         Variables			m_vars;
         BehaviorTreeTask*	m_bt;
         behaviac::string	m_agentType;
-
+		behaviac::vector<BehaviorTreeStackItem_t> m_btStack;
+    	
         friend class Agent;
         friend class Context;
+    	
     public:
         State_t();
         State_t(const State_t& c);

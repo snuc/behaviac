@@ -34,6 +34,14 @@ namespace behaviac {
     class IProperty;
     class IValue;
 
+	struct BehaviorTreeStackItem_t {
+		BehaviorTreeTask*	bt;
+		bool				triggerByEvent;
+
+		BehaviorTreeStackItem_t(BehaviorTreeTask* bt_, bool bByEvent) : bt(bt_), triggerByEvent(bByEvent) {
+		}
+	};
+	
     /*! \addtogroup Agent
      * @{
      * \addtogroup Agent
@@ -556,14 +564,6 @@ namespace behaviac {
         typedef behaviac::map<behaviac::string, uint32_t> AgentTypeIndexMap_t;
         static AgentTypeIndexMap_t*	ms_agent_type_index;
         ///////////////////////////////////////////////////////////////////////////////////////
-
-        struct BehaviorTreeStackItem_t {
-            BehaviorTreeTask*	bt;
-            bool				triggerByEvent;
-
-            BehaviorTreeStackItem_t(BehaviorTreeTask* bt_, bool bByEvent) : bt(bt_), triggerByEvent(bByEvent) {
-            }
-        };
 
         typedef behaviac::vector<BehaviorTreeStackItem_t> BehaviorTreeStack_t;
         typedef behaviac::vector<BehaviorTreeTask*> BehaviorTreeTasks_t;

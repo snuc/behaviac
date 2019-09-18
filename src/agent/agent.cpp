@@ -1140,16 +1140,27 @@ namespace behaviac {
         state.m_agentType = this->GetObjectTypeName();
         this->GetVariables()->CopyTo(0, state.m_vars);
 
+		state.m_btStack.clear();
+		for (BehaviorTreeStack_t::iterator it = this->m_btStack.begin(); it != this->m_btStack.end(); ++it) {
+			BehaviorTreeStackItem_t& item = *it;
+
+			const BehaviorNode* pNewNode = item.bt->GetNode();
+			BehaviorTreeTask* newBt = (BehaviorTreeTask*)pNewNode->CreateAndInitTask();
+			item.bt->CopyTo(newBt);
+			BehaviorTreeStackItem_t newItem(newBt, item.triggerByEvent);
+			state.m_btStack.push_back(newItem);
+		}
+    	
         if (this->m_currentBT) {
             Workspace::GetInstance()->DestroyBehaviorTreeTask(state.m_bt, this);
 
             const BehaviorNode* pNode = this->m_currentBT->GetNode();
             state.m_bt = (BehaviorTreeTask*)pNode->CreateAndInitTask();
             this->m_currentBT->CopyTo(state.m_bt);
-
+        	
             return true;
         }
-
+    	
         return false;
     }
 
@@ -1174,6 +1185,17 @@ namespace behaviac {
         BEHAVIAC_PROFILE("Agent::btload");
 #endif
         state.m_vars.CopyTo(this, *this->m_variables);
+
+		this->m_btStack.clear();
+		for (vector<BehaviorTreeStackItem_t>::const_iterator it = state.m_btStack.begin(); it != state.m_btStack.end(); ++it) {
+			BehaviorTreeStackItem_t item = *it;
+
+			const BehaviorNode* pNewNode = item.bt->GetNode();
+			BehaviorTreeTask* newBt = (BehaviorTreeTask*)pNewNode->CreateAndInitTask();
+			item.bt->CopyTo(newBt);
+			BehaviorTreeStackItem_t newItem(newBt, item.triggerByEvent);
+			this->m_btStack.push_back(newItem);
+		}
 
         if (state.m_bt) {
             if (this->m_currentBT) {
