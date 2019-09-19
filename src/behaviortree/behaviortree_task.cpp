@@ -898,6 +898,8 @@ namespace behaviac {
 
             ttask->m_currentTask = temp.task_;
         }
+
+		ttask->m_currentNodeId = this->m_currentNodeId;
     }
 
     void BranchTask::save(IIONode* node) const {
@@ -910,8 +912,11 @@ namespace behaviac {
                 id = this->m_currentTask->GetId();
             }
 
-            CIOID attrId("current");
-            node->setAttr(attrId, id);
+            CIOID current("current");
+            node->setAttr(current, id);
+
+			CIOID currentNodeId("currentNodeId");
+			node->setAttr(currentNodeId, this->m_currentNodeId);
         }
     }
 
@@ -919,17 +924,27 @@ namespace behaviac {
         super::load(node);
 
         if (this->m_status != BT_INVALID) {
-            CIOID  attrId("current");
+            CIOID  current("current");
             behaviac::string attrStr;
 
-            if (node->getAttr(attrId, attrStr)) {
-                int currentNodeId = -1;
-                StringUtils::ParseString(attrStr.c_str(), currentNodeId);
+            if (node->getAttr(current, attrStr)) {
+                int currentId = -1;
+                StringUtils::ParseString(attrStr.c_str(), currentId);
 
-                if (currentNodeId != -1) {
-                    this->m_currentTask = (BehaviorTask*)this->GetTaskById(currentNodeId);
+                if (currentId != -1) {
+                    this->m_currentTask = (BehaviorTask*)this->GetTaskById(currentId);
                 }
             }
+
+			CIOID currentNode("currentNodeId");
+			if (node->getAttr(currentNode, attrStr)) {
+				int currentNodeId = -1;
+				StringUtils::ParseString(attrStr.c_str(), currentNodeId);
+
+				if (currentNodeId != -1) {
+					this->m_currentNodeId = currentNodeId;
+				}
+			}
         }
     }
 
