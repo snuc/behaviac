@@ -794,6 +794,7 @@ namespace behaviac {
 
     void BehaviorTask::copyto(BehaviorTask* target) const {
         target->m_status = this->m_status;
+		target->m_bHasManagingParent = this->m_bHasManagingParent;
     }
 
     void BehaviorTask::save(IIONode* node) const {
@@ -806,6 +807,9 @@ namespace behaviac {
 
             CIOID  statusId("status");
             node->setAttr(statusId, this->m_status);
+
+			CIOID  hasManagingParentId("hasManagingParent");
+			node->setAttr(hasManagingParentId, this->m_bHasManagingParent);
         }
     }
 
@@ -817,6 +821,14 @@ namespace behaviac {
             behaviac::StringUtils::ParseString(attrStr.c_str(), this->m_status);
         }
 
+		if (this->m_status != BT_INVALID)
+		{
+			CIOID  hasManagingParentId("hasManagingParent");
+			if (node->getAttr(hasManagingParentId, attrStr)) {
+				behaviac::StringUtils::ParseString(attrStr.c_str(), this->m_bHasManagingParent);
+			}
+		}
+    	
 #if !BEHAVIAC_RELEASE
 
         if (this->m_status != BT_INVALID) {
