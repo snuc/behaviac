@@ -91,7 +91,10 @@ namespace behaviac {
         if (pAgent) {
             CIOID  membersId("members");
             IIONode* membersNode = node.findNodeChild(membersId);
-			CTagObject::Load(pAgent, membersNode, pAgent->GetObjectTypeName());
+        	if (membersNode)
+        	{
+				CTagObject::Load(pAgent, membersNode, pAgent->GetObjectTypeName());
+        	}
         }
 
         this->m_vars.Load(&node);
