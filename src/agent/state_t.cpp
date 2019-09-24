@@ -179,7 +179,7 @@ namespace behaviac {
 
 	BehaviorTreeTask* ParseBTTask(IIONode* btNode)
 	{
-		BehaviorTreeTask* bt = nullptr;
+		BehaviorTreeTask* bt = 0;
 		CIOID  sourceId("source");
 		behaviac::string btName;
 
