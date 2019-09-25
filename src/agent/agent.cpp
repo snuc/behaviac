@@ -1184,7 +1184,7 @@ namespace behaviac {
 #if BEHAVIAC_ENABLE_PROFILING
         BEHAVIAC_PROFILE("Agent::btload");
 #endif
-        state.m_vars.CopyTo(this, *this->m_variables);
+        state.m_vars.CopyTo(this, *GetVariables());
 
 		this->m_btStack.clear();
 		for (vector<BehaviorTreeStackItem_t>::const_iterator it = state.m_btStack.begin(); it != state.m_btStack.end(); ++it) {
